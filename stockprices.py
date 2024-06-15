@@ -1,3 +1,5 @@
+import yfinance as yf
+import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import requests
 
@@ -69,12 +71,29 @@ def parse_stock_data(html):
 
     return data
 
+def plot_stock_history(stock_ticker):
+    stock = yf.Ticker(stock_ticker)
+    hist = stock.history(period="1y")  # Fetch 1 year of historical data
+
+    dates = hist.index.to_numpy()  # Convert index to numpy array
+    close_prices = hist['Close'].to_numpy()  # Convert data to numpy array
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(dates, close_prices, label='Close Price')
+    plt.title(f'{stock_ticker} Stock Price - Last 1 Year')
+    plt.xlabel('Date')
+    plt.ylabel('Close Price (USD)')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
 def getData(stock_ticker):
     html = fetch_stock_data(stock_ticker)
     if html:
         data = parse_stock_data(html)
         if data:
             print(data)
+            plot_stock_history(stock_ticker)
 
 ticker = input("Enter Stock Ticker: ")
 getData(ticker)
