@@ -15,6 +15,23 @@ def getData(stock_ticker):
 
     data = {}
 
+    price = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[0].text
+    price_change_dollars = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[1].text
+    price_change_percentage = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[2].text
+
+    data['Current Price'] = price
+    data['Price Change in Dollars'] = price_change_dollars
+    data['Price Change in Percentage'] = price_change_percentage
+
+    for li in quote_stats_div.find_all('li', class_='svelte-tx3nkj'):
+        label_span = li.find('span', class_='label svelte-tx3nkj')
+        value_span = li.find('span', class_='value svelte-tx3nkj')
+
+        if label_span and value_span:
+            label = label_span.get_text(strip=True)
+            value = value_span.get_text(strip=True)
+            data[label] = value
+
     for li in quote_stats_div.find_all('li', class_='last-sm last-lg svelte-tx3nkj'):
         label_span = li.find('span', class_='label svelte-tx3nkj')
         value_span = li.find('span', class_='value svelte-tx3nkj')
