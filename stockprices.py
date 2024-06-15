@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-def getData(stock_ticker):
+def fetch_stock_data(stock_ticker):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
@@ -9,22 +9,20 @@ def getData(stock_ticker):
     url = f'https://finance.yahoo.com/quote/{stock_ticker}/'
     try:
         r = requests.get(url, headers=headers)
-        r.raise_for_status()  # Check if the request was successful
+        r.raise_for_status()
+        return r.text
     except requests.exceptions.HTTPError as errh:
         print(f"HTTP Error: {errh}")
-        return
     except requests.exceptions.ConnectionError as errc:
         print(f"Error Connecting: {errc}")
-        return
     except requests.exceptions.Timeout as errt:
         print(f"Timeout Error: {errt}")
-        return
     except requests.exceptions.RequestException as err:
         print(f"OOps: Something Else: {err}")
-        return
+    return None
 
-    soup = BeautifulSoup(r.text, 'html.parser')
-
+def parse_stock_data(html):
+    soup = BeautifulSoup(html, 'html.parser')
     data = {}
 
     try:
@@ -37,7 +35,7 @@ def getData(stock_ticker):
         data['Price Change in Percentage'] = price_change_percentage
     except (AttributeError, IndexError) as e:
         print(f"Error extracting price information: {e}")
-        return
+        return None
 
     try:
         quote_stats_div = soup.find('div', {'data-testid': 'quote-statistics'})
@@ -67,9 +65,16 @@ def getData(stock_ticker):
             data['52 Week Range'] = fifty_two_week_range.get_text(strip=True)
     except Exception as e:
         print(f"Error extracting statistics: {e}")
-        return
+        return None
 
-    print(data)
+    return data
 
-# Example usage:
-getData('AAPL')
+def getData(stock_ticker):
+    html = fetch_stock_data(stock_ticker)
+    if html:
+        data = parse_stock_data(html)
+        if data:
+            print(data)
+
+ticker = input("Enter Stock Ticker: ")
+getData(ticker)
