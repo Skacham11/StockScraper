@@ -6,3 +6,8 @@ url = 'https://finance.yahoo.com/quote/AAPL/'
 
 r = requests.get(url, headers=headers)
 soup = BeautifulSoup(r.text, 'html.parser')
+
+price = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[0].text
+price_change_dollars = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[1].text
+price_change_percentage = soup.find('div', {'class': 'container svelte-mgkamr'}).find_all('span')[2].text
+print(price, price_change_dollars, price_change_percentage)
