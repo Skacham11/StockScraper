@@ -2,11 +2,18 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Retrieve User-Agent from environment variables
+USER_AGENT = os.getenv('USER_AGENT')
+
 
 def fetch_stock_data(stock_ticker):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+        'User-Agent': USER_AGENT
     }
     url = f'https://finance.yahoo.com/quote/{stock_ticker}/'
     try:
