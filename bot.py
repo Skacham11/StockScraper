@@ -5,11 +5,8 @@ import io
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-
-# Define your Discord bot token
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
