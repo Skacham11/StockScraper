@@ -70,7 +70,7 @@ def parse_stock_data(html):
 
     return data
 
-def plot_stock_history(stock_ticker):
+def plot_stock_history(stock_ticker, buffer):
     stock = yf.Ticker(stock_ticker)
     hist = stock.history(period="1y")  
     dates = hist.index.to_numpy()  
@@ -83,15 +83,17 @@ def plot_stock_history(stock_ticker):
     plt.ylabel('Close Price (USD)')
     plt.legend()
     plt.grid()
-    plt.show()
+    plt.savefig(buffer, format='png')
+    plt.close()
 
 def getData(stock_ticker):
     html = fetch_stock_data(stock_ticker)
     if html:
         data = parse_stock_data(html)
         if data:
-            print(data)
+            #print(data)
             plot_stock_history(stock_ticker)
 
-ticker = input("Enter Stock Ticker: ")
-getData(ticker)
+
+#ticker = input("Enter Stock Ticker: ")
+#getData(ticker)
